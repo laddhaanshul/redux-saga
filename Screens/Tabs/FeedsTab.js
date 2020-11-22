@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, View, TouchableOpacity, StyleSheet, FlatList, Text } from 'react-native';
 import VideoPlayer from 'react-native-video-player';
+import { connect } from 'react-redux'
 
 import FeedsListHeaderComponent from '../Components/FeedsListHeaderComponent';
-import FeedsDummyResponse from '../../Constants/FeedsDummyResponse';
 
 const FeedsTab = props => {
 
     const [feedsData, setFeedsData] = useState([])
 
     useEffect(() => {
-        setFeedsData(FeedsDummyResponse.videos)
+        setFeedsData(props.responseFeedData.videos)
     }, [])
 
     const renderItem = (item) => {
@@ -103,4 +103,10 @@ const styles = StyleSheet.create({
     }
 })
 
-export default FeedsTab;
+const mapStateToProps = (state) => {
+    return {
+        responseFeedData: state.responseData.responseFeedData
+    }
+}
+
+export default connect(mapStateToProps, null)(FeedsTab);

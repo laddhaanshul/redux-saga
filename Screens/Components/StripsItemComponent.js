@@ -61,7 +61,8 @@ const StripItemComponents = props => {
             {
                 props.item.values.map((data) => {
                     if (data.value === inputText) {
-                        return <View style={styles.colorPlateeStyle}>
+                        return <View
+                            style={styles.colorPlateeStyle}>
                             <TouchableOpacity
                                 style={[styles.selectedColorPlateeStyle,
                                 {

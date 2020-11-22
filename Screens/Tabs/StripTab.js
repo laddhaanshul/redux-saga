@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, View, Text, StyleSheet, FlatList, TextInput } from 'react-native';
 
-import StripsDummyResponse from '../../Constants/StripsDummyResponse';
+import { connect } from 'react-redux'
+
 import StripItemComponents from '../Components/StripsItemComponent';
 
 const StripTab = props => {
@@ -9,10 +10,10 @@ const StripTab = props => {
     const [colorsData, setColorsData] = useState([])
 
     useEffect(() => {
-        setColorsData(StripsDummyResponse)
+        setColorsData(props.responseStripsData)
     }, [])
 
-    const renderItem = (item) => {
+    const renderItem = (item, index) => {
         if (item.item.values[0] == undefined) return
         console.log(item.item.values[0].value)
         return <StripItemComponents item={item.item} />
@@ -69,4 +70,10 @@ const styles = StyleSheet.create({
     }
 })
 
-export default StripTab;
+const mapStateToProps = (state) => {
+    return {
+        responseStripsData: state.responseData.responseStripsData
+    }
+}
+
+export default connect(mapStateToProps, null)(StripTab);

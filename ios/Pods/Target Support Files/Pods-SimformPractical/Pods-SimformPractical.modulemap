@@ -1,6 +1,0 @@
-module Pods_SimformPractical {
-  umbrella header "Pods-SimformPractical-umbrella.h"
-
-  export *
-  module * { export * }
-}
