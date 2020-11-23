@@ -3,6 +3,8 @@ import { SafeAreaView, View, TouchableOpacity, StyleSheet, FlatList, Text } from
 import VideoPlayer from 'react-native-video-player';
 import { connect } from 'react-redux'
 
+import { fetchFeedResponse } from '../../store/actions/ResponseData';
+
 import FeedsListHeaderComponent from '../Components/FeedsListHeaderComponent';
 
 const FeedsTab = props => {
@@ -10,7 +12,7 @@ const FeedsTab = props => {
     const [feedsData, setFeedsData] = useState([])
 
     useEffect(() => {
-        setFeedsData(props.responseFeedData.videos)
+        props.onFetchFeeds()
     }, [])
 
     const renderItem = (item) => {
@@ -53,7 +55,7 @@ const FeedsTab = props => {
                     width: '100%'
 
                 }}
-                data={feedsData}
+                data={props.responseFeedData.videos}
                 renderItem={(item) => renderItem(item)}
                 keyExtractor={(item, index) => index.toString()}
                 ListHeaderComponent={<FeedsListHeaderComponent />}
@@ -109,4 +111,12 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, null)(FeedsTab);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onFetchFeeds: () => {
+            dispatch(fetchFeedResponse())
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FeedsTab);

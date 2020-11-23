@@ -3,6 +3,8 @@ import { SafeAreaView, View, Text, StyleSheet, FlatList, TextInput } from 'react
 
 import { connect } from 'react-redux'
 
+import { fetchStripsResponse } from '../../store/actions/ResponseData';
+
 import StripItemComponents from '../Components/StripsItemComponent';
 
 const StripTab = props => {
@@ -10,7 +12,7 @@ const StripTab = props => {
     const [colorsData, setColorsData] = useState([])
 
     useEffect(() => {
-        setColorsData(props.responseStripsData)
+        props.onFetchStrips()
     }, [])
 
     const renderItem = (item, index) => {
@@ -31,7 +33,7 @@ const StripTab = props => {
                         width: '100%',
                         height: '92%'
                     }}
-                    data={colorsData}
+                    data={props.responseStripsData}
                     renderItem={(item) => renderItem(item)}
                     keyExtractor={(item, index) => item.id}
                     showsVerticalScrollIndicator={false}
@@ -76,4 +78,12 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, null)(StripTab);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onFetchStrips: () => {
+            dispatch(fetchStripsResponse())
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(StripTab);
