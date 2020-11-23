@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Text, Image } from 'react-native';
+import ImagePicker from 'react-native-image-picker';
+
+const options = {
+    title: 'Select Photo',
+    storageOptions: {
+        skipBackup: true,
+        path: 'images',
+    },
+};
 
 const FeedsListHeaderComponents = props => {
+
+    const [profilePic, setProfilePic] = useState({ uri: 'ic_user' })
 
     return <View
         style={styles.mainStyle}>
@@ -16,9 +27,30 @@ const FeedsListHeaderComponents = props => {
                 }}>
                     My Feed
                 </Text>
-                <View style={styles.profileStyle}>
+                <TouchableOpacity
+                    style={styles.profileStyle}
+                    onPress={() => {
+                        //I haven't use bridging for showing Image picker but I used one module for this. 
+                        //Because of lack of time.
+                        ImagePicker.showImagePicker(options, (response) => {
+                            console.log('Response = ', response);
 
-                </View>
+                            if (response.didCancel) {
+                                console.log('User cancelled image picker');
+                            } else if (response.error) {
+                                console.log('ImagePicker Error: ', response.error);
+                            } else if (response.customButton) {
+                                console.log('User tapped custom button: ', response.customButton);
+                            } else {
+                                const source = { uri: response.uri };
+                                setProfilePic(source)
+                            }
+                        });
+                    }}
+                ><Image
+                        style={styles.profileStyle}
+                        source={profilePic}
+                    /></TouchableOpacity>
             </View>
         </View>
         <View style={styles.seperatorStyle}>
@@ -54,7 +86,6 @@ const styles = StyleSheet.create({
         width: 45,
         height: 45,
         borderRadius: 45 / 2,
-        backgroundColor: 'orange'
     },
     seperatorStyle: {
         width: '100%',

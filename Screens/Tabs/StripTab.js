@@ -9,8 +9,6 @@ import StripItemComponents from '../Components/StripsItemComponent';
 
 const StripTab = props => {
 
-    const [colorsData, setColorsData] = useState([])
-
     useEffect(() => {
         props.onFetchStrips()
     }, [])
@@ -27,21 +25,28 @@ const StripTab = props => {
             <Text style={styles.headerStyle}>
                 Test Strip
             </Text>
-            <View style={styles.bottomLayoutStyle}>
-                <FlatList
-                    style={{
-                        width: '100%',
-                        height: '92%'
-                    }}
-                    data={props.responseStripsData}
-                    renderItem={(item) => renderItem(item)}
-                    keyExtractor={(item, index) => item.id}
-                    showsVerticalScrollIndicator={false}
-                />
-                <View style={styles.selectedColorStyle}>
+            {props.responseStripsData != undefined ?
+                <View style={styles.bottomLayoutStyle}>
+                    <FlatList
+                        style={{
+                            width: '100%',
+                            height: '92%'
+                        }}
+                        data={props.responseStripsData}
+                        renderItem={(item) => renderItem(item)}
+                        keyExtractor={(item, index) => item.id}
+                        showsVerticalScrollIndicator={false}
+                    />
+                    <View style={styles.selectedColorStyle}>
 
+                    </View>
+                </View> :
+                <View style={styles.noDataLayout}>
+                    <Text>
+                        No Data Available, Fetching Data Please Wait
+                </Text>
                 </View>
-            </View>
+            }
         </View>
     </SafeAreaView>
 }
@@ -69,6 +74,12 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         position: 'absolute',
         borderColor: '#00000030'
+    },
+    noDataLayout: {
+        height: '100%',
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 })
 
@@ -81,6 +92,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         onFetchStrips: () => {
+            console.log('OnFetchStrips')
             dispatch(fetchStripsResponse())
         }
     }

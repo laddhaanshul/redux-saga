@@ -11,8 +11,8 @@ import FeedsDummyResponse from '../../Constants/FeedsDummyResponse';
 import StripsDummyResponse from '../../Constants/StripsDummyResponse';
 
 const initialState = {
-    responseFeedData: {},
-    responseStripsData: []
+    responseFeedData: undefined,
+    responseStripsData: undefined
 }
 
 const responseDataReducer = (state = initialState, action) => {
@@ -23,9 +23,9 @@ const responseDataReducer = (state = initialState, action) => {
         case FETCH_STRIPS_SUCCEEDED:
             return { ...state, responseStripsData: action.receivedStrips }
         case FETCH_FEEDS_FAILED:
-            return { responseFeedData: {} }
+            return { responseFeedData: undefined }
         case FETCH_STRIPS_FAILED:
-            return { responseStripsData: [] }
+            return { responseStripsData: undefined }
         default:
             return state
     }

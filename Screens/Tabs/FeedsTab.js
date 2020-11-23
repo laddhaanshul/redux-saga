@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, View, TouchableOpacity, StyleSheet, FlatList, Text } from 'react-native';
+import { SafeAreaView, View, RefreshControl, StyleSheet, FlatList, Text, TouchableOpacity } from 'react-native';
 import VideoPlayer from 'react-native-video-player';
 import { connect } from 'react-redux'
+import Share from 'react-native-share';
 
 import { fetchFeedResponse } from '../../store/actions/ResponseData';
 
@@ -9,27 +10,43 @@ import FeedsListHeaderComponent from '../Components/FeedsListHeaderComponent';
 
 const FeedsTab = props => {
 
-    const [feedsData, setFeedsData] = useState([])
+    const [refreshing, setRefreshing] = useState(false)
 
     useEffect(() => {
+        setRefreshing(true)
         props.onFetchFeeds()
+        setRefreshing(false)
     }, [])
 
     const renderItem = (item) => {
-        console.log(item.item)
         return <View style={styles.itemMainStyle}>
             <View style={styles.itemSubStyle}>
-                <VideoPlayer
-                    style={{
-                        borderRadius: 10
+                <TouchableOpacity
+                    activeOpacity={1}
+                    onLongPress={() => {
+                        const shareOptions = {
+                            title: 'Share via',
+                            message: item.item.video_url + " Video Sharing ....",
+                        };
+                        Share.open(shareOptions)
+                            .then((res) => {
+                            })
+                            .catch((err) => {
+                            });
                     }}
-                    video={{ uri: item.item.video_url }}
-                    videoWidth={1600}
-                    videoHeight={900}
-                    endWithThumbnail={true}
-                    hideControlsOnStart={true}
-                    thumbnail={{ uri: item.item.thumbnail_url }}
-                />
+                >
+                    <VideoPlayer
+                        style={{
+                            borderRadius: 10
+                        }}
+                        video={{ uri: item.item.video_url }}
+                        videoWidth={1600}
+                        videoHeight={900}
+                        endWithThumbnail={true}
+                        hideControlsOnStart={true}
+                        thumbnail={{ uri: item.item.thumbnail_url }}
+                    />
+                </TouchableOpacity>
                 <View style={styles.bottomBaseStyle}>
                     <View style={styles.bottomSubStyle}>
                         <Text style={{
@@ -47,10 +64,14 @@ const FeedsTab = props => {
         </View>
     }
 
+    const onRefresh = () => {
+        props.onFetchFeeds()
+    }
+
     return <SafeAreaView
         style={{ flex: 1 }}>
         <View style={styles.mainStyle}>
-            <FlatList
+            {props.responseFeedData != undefined ? <FlatList
                 style={{
                     width: '100%'
 
@@ -59,8 +80,15 @@ const FeedsTab = props => {
                 renderItem={(item) => renderItem(item)}
                 keyExtractor={(item, index) => index.toString()}
                 ListHeaderComponent={<FeedsListHeaderComponent />}
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
                 showsVerticalScrollIndicator={false}
-            />
+            /> : <View style={styles.noDataStyle}>
+                    <Text>
+                        No Data Available, Fetching Data Please Wait
+                </Text>
+                </View>}
         </View>
     </SafeAreaView>
 }
@@ -102,6 +130,12 @@ const styles = StyleSheet.create({
     titleStyle: {
         fontSize: 20,
         fontWeight: 'bold',
+    },
+    noDataStyle: {
+        height: '100%',
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 })
 
